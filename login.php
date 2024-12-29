@@ -89,11 +89,11 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="en">
+    <link rel="stylesheet" href="styles.css">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="login-container">
@@ -119,6 +119,12 @@ $conn->close();
 
                 <button type="submit" class="btn">Login</button>
             </form>
+
+            <!-- Register Now Button with Inline CSS -->
+            <a href="<?php echo $userType === 'passenger' ? 'passenger-register.php' : 'company-register.php'; ?>"
+               style="display: inline-block; background-color: #007bff; color: white; padding: 12px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; text-align: center; text-decoration: none; transition: background-color 0.3s ease, transform 0.2s ease; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); margin-top: 20px; text-align: center; width: 100%; max-width: 250px; text-align: center; display: inline-block;  transition: background 0.3s ease, transform 0.2s ease;">
+                Register Now
+            </a>
         </div>
     </div>
 </body>
