@@ -22,6 +22,22 @@ if (!$connect) {
 
 $companyInfo = null;  
 
+$query = "SELECT * FROM companies WHERE id = $company_id";
+$result = mysqli_query($connect, $query);
+
+
+if ($result) {
+    $companyInfo = mysqli_fetch_assoc($result);
+     // Handle logo upload
+     $company_logo = $companyInfo['logo']; // Keep the existing logo by default
+     if (isset($_FILES['company_logo']) && $_FILES['company_logo']['error'] == 0) {
+         $company_logo = 'uploads/' . basename($_FILES['company_logo']['name']);
+         move_uploaded_file($_FILES['company_logo']['tmp_name'], $company_logo);
+     }
+} else {
+    echo "Error fetching company information: " . mysqli_error($connect);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $company_name = mysqli_real_escape_string($connect, $_POST['company_name']);
@@ -30,12 +46,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $company_location = mysqli_real_escape_string($connect, $_POST['company_location']);
     $company_email = mysqli_real_escape_string($connect, $_POST['company_email']);
     $company_phone = mysqli_real_escape_string($connect, $_POST['company_phone']);
-    
-    $company_logo = ''; 
-    if (isset($_FILES['company_logo']) && $_FILES['company_logo']['error'] == 0) {
-        $company_logo = 'uploads/' . basename($_FILES['company_logo']['name']);
-        move_uploaded_file($_FILES['company_logo']['tmp_name'], $company_logo);
-    }
     
     $query = "UPDATE companies 
               SET company_name = '$company_name', 
@@ -52,15 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     } else {
         echo "Error updating record: " . mysqli_error($connect);
     }
-}
-
-$query = "SELECT * FROM companies WHERE id = $company_id";
-$result = mysqli_query($connect, $query);
-
-if ($result) {
-    $companyInfo = mysqli_fetch_assoc($result);
-} else {
-    echo "Error fetching company information: " . mysqli_error($connect);
 }
 
 mysqli_close($connect);
@@ -114,12 +115,15 @@ mysqli_close($connect);
 
             <div class="form-group">
                 <label for="company-logo">Logo</label>
-                <input type="file" id="company-logo" name="company_logo" accept="image/*">
+                <?php if (!empty($companyInfo['logo'])): ?>
+                    <img src="<?php echo htmlspecialchars($companyInfo['logo']); ?>" alt="Company Logo" style="max-width: 200px; max-height: 200px;">
+                <?php endif; ?>
+                <input type="file" id="company-logo" name="company_logo">
             </div>
 
             <div class="form-buttons">
-            <button type="submit" onclick="window.location.href='profile.php'">Save Changes</button>
-            <button type="button" onclick="window.location.href='profile.php'">Cancel</button>
+                <button type="submit">Save Changes</button>
+                <button type="button" onclick="window.location.href='profile.php'">Cancel</button>
             </div>
 
         </form>
